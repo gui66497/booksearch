@@ -2,7 +2,7 @@ const vm = new Vue ({
   el: '#vue-instance',
   data () {
     return {
-      baseUrl: 'http://192.168.1.129:3000', // API url
+      baseUrl: 'http://192.168.1.35:3000', // API url
       searchTerm: 'data', // Default search term
       searchDebounce: null, // Timeout for search bar debounce
       searchResults: [], // Displayed search results
@@ -11,7 +11,15 @@ const vm = new Vue ({
 
       selectedParagraph: null, // Selected paragraph object
       bookOffset: 0, // Offset for book paragraphs being displayed
-      paragraphs: [] // Paragraphs being displayed in book preview window
+      paragraphs: [], // Paragraphs being displayed in book preview window
+
+      fileCount:"", //选择文件数
+      files:{},
+      rate:"",  //上传进度
+      options: {
+        okText: '确定',  // 本地化确认按钮文字提示内容
+        cancelText: '取消',  //本地化关闭按钮文字提示内容
+      }
     }
   },
   async created () {
@@ -36,6 +44,53 @@ const vm = new Vue ({
       console.log(aaa)
       return aaa
     },
+    /** 选择文件 */
+    async selectfile() {
+      document.querySelector('#files').click();
+      this.fileCount = ""
+      this.rate = ""
+    },
+    /** 执行上传 */
+    async upload () {  
+      
+      var files = this.files;
+      if (Object.keys(files).length < 1) {
+        this.$dialog.alert('请先选择文件！', this.options).then(function(dialog) {
+          console.log('Closed');
+        });
+        return;
+      }
+      const formData = new FormData();      //创建form对象
+      for(var i = 0; i < files.length; i++) {
+        formData.append('file', files[i]);  //通过append向form对象添加数据
+      }     
+      axios.post(`${this.baseUrl}/upload`, formData, {
+        onUploadProgress: (progressEvent) => {      //这里要用箭头函数
+          //不然这个this的指向会有问题
+          this.rate="上传进度：" + parseInt( (  progressEvent.loaded/progressEvent.total  ) * 100 );
+        }
+      }).then(response => {
+          console.log("response" + response);
+          if (response.data.result == "error") {
+            //alert(response.data.message)
+            this.$dialog.alert(response.data.message, this.options).then(function(dialog) {
+              console.log('Closed');
+            });
+          }
+          
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    },
+    async changeFile (e) {
+      this.files = e.target.files;
+      this.fileCount = "选择了" + this.files.length + "个文件"
+    },
+    async cancle () {
+      console.log("取消了")
+    },
+
     /** Get next page of search results */
     async nextResultsPage () {
       if (this.numHits > 10) {

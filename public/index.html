@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8">
   <title>Elastic Library</title>
@@ -15,10 +15,21 @@
 
     <!-- Search Bar Header -->
     <div class="mui-panel">
-      <div class="mui-textfield">
-        <input v-model="searchTerm" type="text" v-on:keyup="onSearchInput()">
-        <label>Search</label>
-      </div>
+        <div class="mui-col-md-10">
+            <div class="mui-textfield">
+                <input v-model="searchTerm" type="text" v-on:keyup="onSearchInput()">
+                <label>Search</label>
+            </div>
+        </div>
+        <!--文件上传-->
+        <div class="mui-col-md-2">
+            <div id="app">
+                <input type="file" multiple id="files" name="files" @change="changeFile" style="display:none;" />
+                <button @click="selectfile" class="mui-btn mui-btn--raised">选择文件</button>
+                <button @click="upload" class="mui-btn mui-btn--raised">点击上传</button><br />
+                <p>{{fileCount}}&nbsp;&nbsp;{{rate}} </p>
+            </div>
+        </div>
     </div>
 
     <!-- Search Metadata Card -->
@@ -98,6 +109,13 @@
 <script src="https://cdn.muicss.com/mui-0.9.28/js/mui.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.3/vue.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.17.0/axios.min.js"></script>
+<!-- Include vuejs-dialog plugin -->
+<link href="./vuejs-dialog.min.css" rel="stylesheet">
+<script type="text/javascript" src="./vuejs-dialog.min.js"></script>
 <script src="app.js"></script>
+<script>
+  // Tell Vue to install the plugin.
+  window.Vue.use(VuejsDialog.main.default)
+</script>
 </body>
 </html>

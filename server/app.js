@@ -1,10 +1,21 @@
 const Koa = require('koa')
+const koaBody = require('koa-body');
 const Router = require('koa-router')
 const joi = require('joi')
 const validate = require('koa-joi-validate')
 const search = require('./search')
 const app = new Koa()
 const router = new Router()
+const fs = require('fs');
+const bookpath = "/usr/src/app/books" //上传文档存放路径
+
+// 文件上传
+app.use(koaBody({
+  multipart: true,
+  formidable: {
+      maxFileSize: 200*1024*1024	// 设置上传文件大小最大限制，默认2M
+  }
+}));
 
 // Log each request to the console
 app.use(async (ctx, next) => {
@@ -45,6 +56,33 @@ router.get('/search',
     ctx.body = aaa
   }
 )
+
+/** Post /upload
+ * 文件上传
+ */
+router.post('/upload', 
+  async (ctx) => {
+    var files = ctx.request.files.file;	// 获取上传文件
+    if (!(files instanceof Array)) {
+      files = new Array(files)
+    }
+    for (let file of files) {
+      // 获取上传文件扩展名
+      const ext = file.name.split('.').pop();
+      if (["docx", "doc", "txt", "pdf"].indexOf(ext) < 0) {
+        return ctx.body = JSON.stringify({"result":"error","message": "后缀名[" + ext + "]不支持"});
+      }
+      // 创建可读流
+      const reader = fs.createReadStream(file.path);
+      // 创建可写流
+      //const upStream = fs.createWriteStream(`upload/${Math.random().toString()}.${ext}`);
+      const upStream = fs.createWriteStream(`${bookpath}/${file.name}`);
+      // 可读流通过管道写入可写流
+      reader.pipe(upStream);
+    }
+
+    return ctx.body = JSON.stringify({"result":"success","message": "上传成功"});
+})
 
 /**
  * GET /paragraphs

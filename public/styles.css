@@ -1,12 +1,12 @@
-body { font-family: 'EB Garamond', serif; }
+body { font-family: '微软雅黑', serif; }
 
 .mui-textfield > input, .mui-btn, .mui--text-subhead, .mui-panel > .mui--text-headline {
-  font-family: 'Open Sans', sans-serif;
+  font-family: '微软雅黑', sans-serif;
 }
 
 .all-caps { text-transform: uppercase; }
 .app-container { padding: 16px; }
-.search-results em { font-weight: bold; }
+.search-results em { font-weight: bold; background-color: #fdff68}
 .book-modal > button { width: 100%; }
 .search-results .mui-divider { margin: 14px 0; }
 
