@@ -29,7 +29,7 @@ docker-compose up -d --build
 
 ### Usage 使用
 
-浏览器访问http://你的IP:8080/，顺利的话应该出现如下界面
+浏览器访问http://你的IP:8080 ，顺利的话应该出现如下界面
 
 ![首页](http://cdn.guitang.fun/booksearch_1.png)
 
