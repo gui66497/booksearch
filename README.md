@@ -2,11 +2,11 @@
 
 > 一个本地文档搜索引擎。
 
-界面实时搜索，支持中文分词，支持上传文档，容器化部署。
-前端：Vue、mui、vuejs-dialog、Kibana
-后端：NodeJS、Koa
-存储：Elasticsearch
-文档解析：Fscrawler
+界面实时搜索，支持中文分词，支持上传文档，容器化部署。 
+前端：Vue、mui、vuejs-dialog、Kibana 
+后端：NodeJS、Koa 
+存储：Elasticsearch 
+文档解析：Fscrawler 
 
 
 ## Getting Started 使用指南
