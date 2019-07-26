@@ -4,8 +4,9 @@ const elasticsearch = require('elasticsearch')
 const index = 'myjob'
 const type = '_doc'
 const port = 9200
-const host = process.env.ES_HOST || '192.168.1.35'
-const client = new elasticsearch.Client({ host: { host, port }, httpAuth: "elastic:changeme"})
+const host = process.env.ES_HOST || 'elasticsearch'
+const password = process.env.ELASTIC_PASSWORD || 'changeme'
+const client = new elasticsearch.Client({ host: { host, port }, httpAuth: `elastic:${password}`})
 
 /** Check the ES connection status */
 async function checkConnection () {

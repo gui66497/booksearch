@@ -28,7 +28,7 @@ services:
     - elasticsearch
 
   api: # Node.js App
-    container_name: gs-api
+    container_name: api
     build: .
     ports:
     - "3000:3000" # Expose API port
@@ -43,10 +43,12 @@ services:
     - elk
 
   frontend: # Nginx Server For Frontend App
-    container_name: gs-frontend
+    container_name: frontend
     image: nginx
     volumes: # Serve local "public" dir
     - ./public:/usr/share/nginx/html
+    command:
+      bash -c "sed -i 's/API_HOST/192.168.1.35/' /usr/share/nginx/html/app.js && nginx -g 'daemon off;'"
     ports:
     - "8080:80" # Forward site to localhost:8080
     networks:
