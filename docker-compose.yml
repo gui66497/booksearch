@@ -1,0 +1,69 @@
+version: '3.3'
+services:
+  elasticsearch:
+    image: fang/elasticsearch:7.2.0
+    container_name: es
+    ports:
+    - "9200:9200"
+    - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx4G -Xms4G"
+      ELASTIC_PASSWORD: changeme
+    volumes:
+    - ./config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    - ./datas/es/:/usr/share/elasticsearch/data
+    networks:
+    - elk
+
+  kibana:
+    image: kibana:7.2.0
+    container_name: kibana
+    ports:
+    - "5601:5601"
+    volumes:
+    - ./config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    networks:
+    - elk
+    depends_on:
+    - elasticsearch
+
+  api: # Node.js App
+    container_name: gs-api
+    build: .
+    ports:
+    - "3000:3000" # Expose API port
+    - "9229:9229" # Expose Node process debug port (disable in production)
+    environment: # Set ENV vars
+    - NODE_ENV=local
+    - ES_HOST=elasticsearch
+    - PORT=3000
+    volumes: # Attach local book data directory
+    - ./fscrawler/books:/usr/src/app/books
+    networks:
+    - elk
+
+  frontend: # Nginx Server For Frontend App
+    container_name: gs-frontend
+    image: nginx
+    volumes: # Serve local "public" dir
+    - ./public:/usr/share/nginx/html
+    ports:
+    - "8080:80" # Forward site to localhost:8080
+    networks:
+    - elk
+
+  fscrawler: # 文档自动存es
+    container_name: fscrawler
+    image: fang/fscrawler:2.7-SNAPSHOT
+    volumes:
+    - ./fscrawler/books:/usr/share/fscrawler/data/:ro #书本文件夹
+    - ./fscrawler/myjob:/usr/share/fscrawler/config-mount/myjob:ro #job配置文件
+    - ./fscrawler/_settings.json:/usr/share/fscrawler/config/_default/7/_settings.json #修改mapping
+    networks:
+    - elk
+    depends_on:
+    - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
