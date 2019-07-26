@@ -2,8 +2,8 @@ const vm = new Vue ({
   el: '#vue-instance',
   data () {
     return {
-      baseUrl: 'http://192.168.1.35:3000', // API url
-      searchTerm: 'data', // Default search term
+      baseUrl: 'http://192.168.1.129:3000', // API url
+      searchTerm: 'fscrawler', // Default search term
       searchDebounce: null, // Timeout for search bar debounce
       searchResults: [], // Displayed search results
       numHits: null, // Total search results found
@@ -13,6 +13,7 @@ const vm = new Vue ({
       bookOffset: 0, // Offset for book paragraphs being displayed
       paragraphs: [], // Paragraphs being displayed in book preview window
 
+      docCount: 0,  //文档总数
       fileCount:"", //选择文件数
       files:{},
       rate:"",  //上传进度
@@ -23,7 +24,8 @@ const vm = new Vue ({
     }
   },
   async created () {
-    this.searchResults = await this.search() // Search for default term
+    this.searchResults = await this.search() // 触发搜索
+    this.docCount = await this.count() //触发统计
   },
   methods: {
     /** Debounce search input by 100 ms */
@@ -40,20 +42,22 @@ const vm = new Vue ({
     async search () {
       const response = await axios.get(`${this.baseUrl}/search`, { params: { term: this.searchTerm, offset: this.searchOffset } })
       this.numHits = response.data.hits.total.value
-      aaa = response.data.hits.hits
-      console.log(aaa)
-      return aaa
+      return response.data.hits.hits
+    },
+    /** Call API to search for inputted term */
+    async count () {
+      const response = await axios.get(`${this.baseUrl}/count`)
+      return response.data.count
     },
     /** 选择文件 */
     async selectfile() {
       document.querySelector('#files').click();
-      this.fileCount = ""
-      this.rate = ""
+      this.fileCount = "";
+      this.rate = "";
     },
     /** 执行上传 */
-    async upload () {  
-      
-      var files = this.files;
+    async upload () {
+      const files = this.files;
       if (Object.keys(files).length < 1) {
         this.$dialog.alert('请先选择文件！', this.options).then(function(dialog) {
           console.log('Closed');
@@ -71,17 +75,13 @@ const vm = new Vue ({
         }
       }).then(response => {
           console.log("response" + response);
-          if (response.data.result == "error") {
-            //alert(response.data.message)
-            this.$dialog.alert(response.data.message, this.options).then(function(dialog) {
-              console.log('Closed');
-            });
-          }
-          
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+          this.$dialog.alert(response.data.message, this.options).then(function(dialog) {
+            console.log('Closed');
+          });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     },
     async changeFile (e) {
       this.files = e.target.files;

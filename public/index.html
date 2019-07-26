@@ -34,8 +34,14 @@
 
     <!-- Search Metadata Card -->
     <div class="mui-panel">
-      <div class="mui--text-headline">{{ numHits }} Hits</div>
-      <div class="mui--text-subhead">Displaying Results {{ searchOffset }} - {{ searchOffset + 9 }}</div>
+        <div class="mui-col-md-10">
+            <div class="mui--text-headline">{{ numHits }} 命中</div>
+            <div class="mui--text-subhead">展示结果： {{ searchOffset }} - {{ searchOffset + 9 }}</div>
+        </div>
+        <div class="mui-col-md-2">
+            <div class="mui--text-headline">&nbsp;</div>
+            <div class="mui--text-subhead" style="text-align: right">共收录文档{{ docCount }} 篇</div>
+        </div>
     </div>
 
     <!-- Top Pagination Card -->
@@ -53,9 +59,9 @@
         <div v-if="hit.highlight['path.real.fulltext']" v-html="hit.highlight['path.real.fulltext']"></div>
         <div v-if="hit.highlight.content" v-html="hit.highlight.content"></div>
         <!-- <div class="mui--text-title" v-html="hit.highlight.content"></div> -->
-        
+
         <!-- <div class="mui--text-subhead">{{ hit._source.title }} - {{ hit._source.author }}</div> -->
-        
+
         <!-- <div class="mui--text-body2">Location {{ hit._source.location }}</div> -->
         <!-- <div class="mui--text-body2">{{ hit._source.content }}</div> -->
       </div>

@@ -18,7 +18,7 @@ body { font-family: '微软雅黑', serif; }
 }
 
 .search-results > div {
-  flex-basis: 95%;
+  flex-basis: 98%;
   box-sizing: border-box;
   cursor: pointer;
 }

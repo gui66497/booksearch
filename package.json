@@ -22,7 +22,6 @@
     "koa-body": "4.0.3",
     "koa-joi-validate": "0.5.1",
     "koa-router": "7.2.1",
-    "koa2-cors": "2.0.6",
     "vuejs-dialog": "^1.4.1"
   },
   "devDependencies": {
