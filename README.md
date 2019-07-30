@@ -9,10 +9,6 @@
 文档解析：Fscrawler
 
 
-## Getting Started 使用指南
-
-项目使用条件、如何安装部署、怎样运行使用以及使用演示
-
 ### Prerequisites 项目使用条件
 
 1. 克隆本项目到本地
@@ -33,6 +29,20 @@ docker-compose up -d --build
 
 ![首页](http://cdn.guitang.fun/booksearch_1.png)
 
+## Principle 原理
+
+通过Fscrawler来进行文档的录入，只需要简单的配置，实现将本地文件系统的文件导入到ES中进行检索，同时支持丰富的文件格式（txt.pdf,html,word...）  
+
+中文分词采用IK分词插件，Fscrawler支持手动配置Mapping，所以文档录入后就支持中文搜索  
+
+前端使用mui这一简单而又高性能的UI框架来构建页面，与后台通过axios来进行交互  
+
+后台主要使用了koa2框架对ES查询做了一层封装  
+
+最后将五个模块写进一个docker-compose.yml文件中实现一键执行。
+
+
 ## License 授权协议
 
-这个项目 MIT 协议。
+本项目遵循 MIT 协议。
+
