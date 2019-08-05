@@ -13,7 +13,7 @@
 <body>
 <div class="app-container" id="vue-instance">
 
-    <!-- Search Bar Header -->
+    <!-- 搜索栏 Header -->
     <div class="mui-panel">
         <div class="mui-col-md-10">
             <div class="mui-textfield">
@@ -32,7 +32,7 @@
         </div>
     </div>
 
-    <!-- Search Metadata Card -->
+    <!-- 搜索元信息 -->
     <div class="mui-panel">
         <div class="mui-col-md-10">
             <div class="mui--text-headline">{{ numHits }} 命中</div>
@@ -44,30 +44,24 @@
         </div>
     </div>
 
-    <!-- Top Pagination Card -->
-    <!-- <div class="mui-panel pagination-panel">
-        <button class="mui-btn mui-btn--flat" v-on:click="prevResultsPage()">Prev Page</button>
-        <button class="mui-btn mui-btn--flat" v-on:click="nextResultsPage()">Next Page</button>
-    </div> -->
-
-    <!-- Search Results Card List -->
+    <!-- 搜索结果卡片列表 -->
     <div class="search-results" ref="searchResults">
       <div class="mui-panel" v-for="hit in searchResults" v-on:click="showBookModal(hit)">
         <div class="mui--text-subhead">文件名：{{ hit._source.file.filename }}</div>
         <div class="mui-divider"></div>
         <!-- <div class="mui--text-title" v-html="hit.highlight.text[0]"></div> -->
         <div v-if="hit.highlight['path.real.fulltext']" v-html="hit.highlight['path.real.fulltext']"></div>
-        <div v-if="hit.highlight.content" v-html="hit.highlight.content"></div>
+        <div v-for="content in hit.highlight.content">
+            <div v-if="content" v-html="content"></div>
+        </div>
         <!-- <div class="mui--text-title" v-html="hit.highlight.content"></div> -->
-
         <!-- <div class="mui--text-subhead">{{ hit._source.title }} - {{ hit._source.author }}</div> -->
-
         <!-- <div class="mui--text-body2">Location {{ hit._source.location }}</div> -->
         <!-- <div class="mui--text-body2">{{ hit._source.content }}</div> -->
       </div>
     </div>
 
-    <!-- Bottom Pagination Card -->
+    <!-- 底部分页卡片 -->
     <div class="mui-panel pagination-panel">
         <button class="mui-btn mui-btn--flat" v-on:click="prevResultsPage()">上一页</button>
         <button class="mui-btn mui-btn--flat" v-on:click="nextResultsPage()">下一页</button>
@@ -93,18 +87,9 @@
               {{ selectedParagraph._source.content }}
           </pre>
         </div>
-        <!-- <div v-for="paragraph in paragraphs">
-          <div v-if="paragraph._source.location === selectedParagraph._source.location" class="mui--text-body2">
-            <strong>{{ paragraph._source.text }}</strong>
-          </div>
-          <div v-else class="mui--text-body1">
-            {{ paragraph._source.text }}
-          </div>
-          <br>
-        </div> -->
       </div>
 
-      <!-- Book Pagination Footer -->
+      <!-- 底部分页卡片 -->
       <div class="modal-footer">
         <!-- <button class="mui-btn mui-btn--flat" v-on:click="prevBookPage()">Prev Page</button> -->
         <button class="mui-btn mui-btn--flat" v-on:click="closeBookModal()">关闭</button>
