@@ -58,6 +58,21 @@ router.get('/search',
 );
 
 /**
+ * 通过文件名精确查找
+ */
+router.get('/searchByFileName',
+    async (ctx, next) => {
+        const fileNames = JSON.parse(ctx.request.query.fileNames)
+        // 这里需要精确匹配 但file.filename被我分词了 所以用path.virtual来代替
+        // 它是keyword类型 唯一的不同就是文件名前面多了斜杠 所以这里需要处理一下
+        for (let i = 0; i < fileNames.length; i++) {
+            fileNames[i] = "/" + fileNames[i]
+        }
+        ctx.body = await search.queryByFileName(fileNames)
+    }
+);
+
+/**
  * Post /upload
  * 文件上传
  */

@@ -20,6 +20,7 @@ const vm = new Vue ({
       options: {
         okText: '确定',  // 本地化确认按钮文字提示内容
         cancelText: '取消',  //本地化关闭按钮文字提示内容
+        verification: '继续',
       }
     }
   },
@@ -55,8 +56,9 @@ const vm = new Vue ({
       this.fileCount = "";
       this.rate = "";
     },
-    /** 执行上传 */
+    /** 上传前校验 */
     async upload () {
+      let sel = this
       const files = this.files;
       if (Object.keys(files).length < 1) {
         this.$dialog.alert('请先选择文件！', this.options).then(function(dialog) {
@@ -64,24 +66,54 @@ const vm = new Vue ({
         });
         return;
       }
+      // 根据文件名判断文档是否已存在
+      console.log(files);
+      let fileNames = [];
+      for (let j = 0; j < files.length; j++) {
+        fileNames.push(files[j].name);
+      }
+      const response = await axios.get(`${this.baseUrl}/searchByFileName`, { params: { fileNames: JSON.stringify(fileNames) } });
+      let existFileName = [];
+      response.data.hits.hits.forEach(function (file) {
+        existFileName.push(file._source.file.filename)
+      });
+      if (existFileName.length > 0) {
+        // 需用户手动确认
+        this.$dialog
+            .confirm('文件[' + existFileName + "]在库中已存在，点击确定将覆盖此文件！", this.options)
+            .then(function(dialog) {
+              console.log('确认了');
+              sel.doUpload(files);
+            })
+            .catch(function() {
+              console.log('取消了');
+            });
+      } else {
+        // 直接上传
+        this.doUpload(files);
+      }
+
+    },
+    /** 实际上传 */
+    async doUpload(files) {
       const formData = new FormData();      //创建form对象
       for(var i = 0; i < files.length; i++) {
         formData.append('file', files[i]);  //通过append向form对象添加数据
-      }     
+      }
       axios.post(`${this.baseUrl}/upload`, formData, {
         onUploadProgress: (progressEvent) => {      //这里要用箭头函数
           //不然这个this的指向会有问题
           this.rate="上传进度：" + parseInt( (  progressEvent.loaded/progressEvent.total  ) * 100 );
         }
       }).then(response => {
-          console.log("response" + response);
-          this.$dialog.alert(response.data.message, this.options).then(function(dialog) {
-            console.log('Closed');
-          });
+        console.log("response" + response);
+        this.$dialog.alert(response.data.message, this.options).then(function(dialog) {
+          console.log('Closed');
+        });
       })
-      .catch(function (error) {
-        console.log(error);
-      });
+          .catch(function (error) {
+            console.log(error);
+          });
     },
     async changeFile (e) {
       this.files = e.target.files;
