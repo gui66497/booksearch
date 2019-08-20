@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   elasticsearch:
-    image: fang/elasticsearch:7.2.0
+    image: gui66497/elasticsearch:7.2.0
     container_name: es
     ports:
     - "9200:9200"
@@ -56,7 +56,7 @@ services:
 
   fscrawler: # 文档自动存es
     container_name: fscrawler
-    image: fang/fscrawler:2.7-SNAPSHOT
+    image: gui66497/fscrawler:2.7-SNAPSHOT
     volumes:
     - ./fscrawler/books:/usr/share/fscrawler/data/:ro #书本文件夹
     - ./fscrawler/myjob:/usr/share/fscrawler/config-mount/myjob:ro #job配置文件
