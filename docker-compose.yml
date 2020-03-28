@@ -56,6 +56,8 @@ services:
 
   fscrawler: # 文档自动存es
     container_name: fscrawler
+    ports:
+      - "8085:8085"
     image: gui66497/fscrawler:2.7-SNAPSHOT
     volumes:
     - ./fscrawler/books:/usr/share/fscrawler/data/:ro #书本文件夹
