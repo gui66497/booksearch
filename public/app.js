@@ -110,10 +110,9 @@ const vm = new Vue ({
         this.$dialog.alert(response.data.message, this.options).then(function(dialog) {
           console.log('Closed');
         });
-      })
-          .catch(function (error) {
+      }).catch(function (error) {
             console.log(error);
-          });
+      });
     },
     async changeFile (e) {
       this.files = e.target.files;
